@@ -25,7 +25,6 @@ type User = {
   isRoot:       Boolean   
 }
 
-const testName = 'firestore-local-emulator-test'
 const projectId = "rockmap-70133"
 const databaseName = 'RockMap-debug'
 const rules = fs.readFileSync('./firestore.rules', 'utf8')
@@ -33,22 +32,6 @@ const authedApp = (auth?: Auth) => firebase.initializeTestApp({ projectId: proje
 const adminApp = firebase.initializeAdminApp({ projectId: projectId, databaseName }).firestore()
 const userCollectionId = 'users'
 const today = new Date()
-
-
-// 認証付きのFreistore appを作成する
-const createAuthApp = (auth?: object): firebase.firestore.Firestore => {
-  return firebase
-    .initializeTestApp({ projectId: testName, auth: auth })
-    .firestore();
-};
-
-// 管理者権限で操作できるFreistore appを作成する
-const createAdminApp = (): firebase.firestore.Firestore => {
-  return firebase.initializeAdminApp({ projectId: testName }).firestore();
-};
-
-// user情報への参照を作る
-const usersRef = (db: firebase.firestore.Firestore) => db.collection("user");
 
 // ルールファイルの読み込み
 beforeAll(async () => {
