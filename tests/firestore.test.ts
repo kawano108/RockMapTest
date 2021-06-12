@@ -26,9 +26,9 @@ type User = {
 }
 
 const testName = 'firestore-local-emulator-test'
-const projectId = "RockMap-debug"
+const projectId = "rockmap-70133"
 const databaseName = 'RockMap-debug'
-const rulesPath = "firestore.rules"
+const rules = fs.readFileSync('./firestore.rules', 'utf8')
 const authedApp = (auth?: Auth) => firebase.initializeTestApp({ projectId: projectId, databaseName, auth }).firestore()
 const adminApp = firebase.initializeAdminApp({ projectId: projectId, databaseName }).firestore()
 const userCollectionId = 'users'
@@ -54,9 +54,9 @@ const usersRef = (db: firebase.firestore.Firestore) => db.collection("user");
 beforeAll(async () => {
   await firebase.loadFirestoreRules({
     projectId: projectId,
-    rules: fs.readFileSync(rulesPath, "utf8")
-  });
-});
+    rules: rules
+  })
+})
 
 // Firestoreデータのクリーンアップ
 afterEach(async () => {
