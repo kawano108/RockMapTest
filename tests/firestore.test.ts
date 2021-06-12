@@ -17,10 +17,10 @@ type User = {
   updatedAt:    Date
   parentPath:   string
   name:         string
-  photoURL:     URL
+  photoURL:     string
   socialLinks:  SocialLink[]
   introduction: string
-  headerUrl:    URL
+  headerUrl:    string
   deleted:      Boolean
   isRoot:       Boolean   
 }
@@ -70,15 +70,14 @@ afterAll(async () => {
 
 describe('/users', () => {
   describe('read', () => {
-    it('can not create', async () => {
+    it('can read user document without auth', async () => {
       const db = authedApp()
-      const user = createTestUser()
+      await configureUserTestData('others')
 
-      await firebase.assertFails(db.collection('users').doc(user.id).set(user))
+      await firebase.assertSucceeds(db.collection('users').doc('others').get())
     })
   })
 })
-
 
 function configureUserTestData(documentId: string) {
   const db = adminApp
@@ -94,7 +93,7 @@ function createTestUser(): User {
     updatedAt:    today,
     parentPath:   '',
     name:         'testUser',
-    photoURL:     url,
+    photoURL:     'https://javascript.info/url',
     socialLinks:  [
       {
         linkType: 'twitter',
@@ -106,8 +105,9 @@ function createTestUser(): User {
       },
     ],
     introduction: 'これはプロフィールです。',
-    headerUrl:    url,
+    headerUrl:    'https://javascript.info/url',
     deleted:      false,
     isRoot:       true 
   }
 }
+
