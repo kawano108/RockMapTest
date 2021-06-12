@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isUserAuthenticated(userId) {
+        return isAuthenticated() && userId == request.auth.uid;
+    }
+
+    // ルールの記述
+    match/users/{userId} {
+      allow read:   if true;
+      allow create: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+      allow update: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+      allow delete: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+
+      match/rocks/{rockId} {
+        allow read:   if true;
+        allow create: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+        allow update: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+        allow delete: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+      }
+
+      match/courses/{courseId} {
+        allow read:   if true;
+        allow create: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+        allow update: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+        allow delete: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+      }
+
+      match/climbed/{climbedId} {
+        allow read:   if true;
+        allow create: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+        allow update: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+        allow delete: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+      }
+    }
+  }
+}
