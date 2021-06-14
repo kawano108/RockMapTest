@@ -86,6 +86,18 @@ describe('/users', () => {
       await configureUserTestData(adminApp, userId)
 
       await makeUserReference(authedApp(), userId).get()
+
+  describe('create', () => {
+    it('can not create user document without auth', async () => {
+      await firebase.assertFails(
+        makeUserReference(authedApp(), randomId).set(dummyUser()) // no auth
+      )
+    })
+
+    it('can create user document wit auth', async () => {
+      await firebase.assertFails(
+        makeUserReference(authedApp({ uid: 'mogu' }), randomId).set(dummyUser())
+      )
     })
   })
 })
