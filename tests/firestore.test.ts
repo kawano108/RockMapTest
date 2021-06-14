@@ -85,7 +85,11 @@ describe('/users', () => {
       const userId = randomId
       await configureUserTestData(adminApp, userId)
 
-      await makeUserReference(authedApp(), userId).get()
+      await firebase.assertSucceeds(
+        makeUserReference(authedApp(), userId).get()
+      )
+    })
+  })
 
   describe('create', () => {
     it('can not create user document without auth', async () => {
@@ -109,7 +113,9 @@ describe('/users/{userId}/rocks', () => {
       const documentId = randomId
       await configureRockTestData(adminApp, documentId, parentId)
 
-      await makeRockReference(authedApp(), documentId, parentId).get()
+      await firebase.assertSucceeds( 
+        makeRockReference(authedApp(), documentId, parentId).get()
+      )
     })
   })
 })
@@ -174,7 +180,7 @@ function dummyRock(): Rock {
   return {
     id:             randomId,
     createdAt:      today,
-    updatedAt:     today,
+    updatedAt:      today,
     parentPath:     '',
     name:           '日陰岩',
     address:        '東京都千代田区丸の内一丁目',
@@ -187,7 +193,7 @@ function dummyRock(): Rock {
     lithology:      'granite',
     desc:           'aaaaaaaaaaaaaaaaaaaa',
     registedUserId: 'other',
-    headerUrl:     'https://javascript.info/url',
+    headerUrl:      'https://javascript.info/url',
     imageUrls:      ['https://javascript.info/url']
   }
 }
