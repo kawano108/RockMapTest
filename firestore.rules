@@ -13,22 +13,22 @@ service cloud.firestore {
     // ルールの記述
     match/users/{userId} {
       allow read:   if true;
-      allow create: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
-      allow update: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
-      allow delete: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+      allow create: if isUserAuthenticated(userId)
+      allow update: if isUserAuthenticated(userId)
+      allow delete: if false;
 
       match/rocks/{rockId} {
         allow read:   if true;
-        allow create: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
-        allow update: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
-        allow delete: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+        allow create: if isUserAuthenticated(userId)
+        allow update: if isUserAuthenticated(userId)
+        allow delete: if isUserAuthenticated(userId)
       }
 
       match/courses/{courseId} {
         allow read:   if true;
-        allow create: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
-        allow update: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
-        allow delete: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+        allow create: if isUserAuthenticated(userId)
+        allow update: if isUserAuthenticated(userId)
+        allow delete: if isUserAuthenticated(userId)
       }
 
       match/climbed/{climbedId} {
