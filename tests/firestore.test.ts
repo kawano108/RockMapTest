@@ -99,8 +99,8 @@ describe('/users', () => {
     })
 
     it('can create user document wit auth', async () => {
-      await firebase.assertFails(
-        makeUserReference(authedApp({ uid: 'mogu' }), randomId).set(dummyUser())
+      await firebase.assertSucceeds(
+        makeUserReference(authedApp({ uid: 'mogu' }), 'mogu').set(dummyUser())
       )
     })
   })
