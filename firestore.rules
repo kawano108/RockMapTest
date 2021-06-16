@@ -9,8 +9,20 @@ service cloud.firestore {
     function isUserAuthenticated(userId) {
         return isAuthenticated() && userId == request.auth.uid;
     }
+    
+    // for read subCollections
+    match/{path=**}/rocks/{rock} {
+    	allow read: if true;
+    }
+    
+    match/{path=**}/courses/{course} {
+    	allow read: if true;
+    }
+    
+    match/{path=**}/climbed/{climbed} {
+    	allow read: if true;
+    }
 
-    // ルールの記述
     match/users/{userId} {
       allow read:   if true;
       allow create: if isUserAuthenticated(userId)
