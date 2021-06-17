@@ -41,6 +41,13 @@ service cloud.firestore {
         allow create: if isUserAuthenticated(userId)
         allow update: if isUserAuthenticated(userId)
         allow delete: if isUserAuthenticated(userId)
+
+        match/totalClimbedNumber/{id} {
+          allow read:   if true;
+          allow create: if isUserAuthenticated(userId)
+          allow update: if isUserAuthenticated(userId)
+          allow delete: if false
+        }
       }
 
       match/climbed/{climbedId} {
