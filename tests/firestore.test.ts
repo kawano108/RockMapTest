@@ -82,11 +82,11 @@ afterAll(async () => {
 describe('/users', () => {
   describe('read', () => {
     it('can read user document without auth', async () => {
-      const userId = randomId
-      await configureUserTestData(adminApp, userId)
+      const uid = randomId
+      await adminApp.collection(userCollectionId).doc(uid).set(dummyUser())
 
       await firebase.assertSucceeds(
-        makeUserReference(authedApp(), userId).get()
+        authedApp().collection(userCollectionId).doc(uid).get()
       )
     })
   })
@@ -172,45 +172,14 @@ describe('/users/{userId}/rocks', () => {
     it('can read rock document without auth', async () => {
       const parentId = randomId
       const documentId = randomId
-      await configureRockTestData(adminApp, documentId, parentId)
+      await adminApp.collection(userCollectionId).doc(parentId).collection(rockCollectionId).doc(documentId)
 
       await firebase.assertSucceeds( 
-        makeRockReference(authedApp(), documentId, parentId).get()
+        authedApp().collection(userCollectionId).doc(parentId).collection(rockCollectionId).doc(documentId).get()
       )
     })
   })
 })
-
-function makeUserReference(
-  db: firebase.firestore.Firestore,
-  documentId: string
-): firebase.firestore.DocumentReference {
-  return db.collection(userCollectionId).doc(documentId)
-}
-
-function makeRockReference(
-  db: firebase.firestore.Firestore,
-  documentId: string,
-  parentUserId: string
-): firebase.firestore.DocumentReference {
-  return makeUserReference(db, parentUserId).collection(rockCollectionId).doc(documentId)
-}
-
-function configureUserTestData(
-  db: firebase.firestore.Firestore,
-  documentId: string
-) {
-  return makeUserReference(db, documentId).set(dummyUser())
-}
-
-function configureRockTestData(
-  db: firebase.firestore.Firestore,
-  documentId: string,
-  parentUserId: string
-) {
-  const rockReference = makeRockReference(db, documentId, parentUserId)
-  return rockReference.set(dummyRock())
-}
 
 function dummyUser(): User {
   return {
