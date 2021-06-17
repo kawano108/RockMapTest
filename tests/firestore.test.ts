@@ -101,6 +101,39 @@ describe('/users', () => {
     it('can create user document wit auth', async () => {
       await firebase.assertSucceeds(
         makeUserReference(authedApp({ uid: 'mogu' }), 'mogu').set(dummyUser())
+
+  describe('update', () => {
+    it('can not update user document without auth', async () => {
+      await adminApp.collection(userCollectionId).doc('taro').set(dummyRock())
+
+      const unAuthedApp = authedApp()
+      const userReference = unAuthedApp.collection(userCollectionId).doc('taro')
+
+      await firebase.assertFails(
+        userReference.update({ 'name': 'aaaaaaaaaa' }) // no auth
+      )
+    })
+
+    it('can not update another user document ', async () => {
+      await adminApp.collection(userCollectionId).doc('taro').set(dummyRock())
+
+      const unAuthedApp = authedApp({ uid: 'jiro'})
+      const userReference = unAuthedApp.collection(userCollectionId).doc('jiro')
+
+      await firebase.assertFails(
+        userReference.update({ 'name': 'aaaaaaaaaa' }) // no auth
+      )
+    })
+
+    it('can update user document wit auth', async () => {
+      const userId = randomId
+      const userReference = authedApp({ uid: userId }).collection(userCollectionId).doc(userId)
+      await userReference.set(dummyUser())
+      await firebase.assertSucceeds(
+        userReference.update({ 'name': 'aaaaaaaaaa' })
+      )
+    })
+  })
       )
     })
   })
