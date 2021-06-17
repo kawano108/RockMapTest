@@ -94,13 +94,22 @@ describe('/users', () => {
   describe('create', () => {
     it('can not create user document without auth', async () => {
       await firebase.assertFails(
-        makeUserReference(authedApp(), randomId).set(dummyUser()) // no auth
+        authedApp().collection(userCollectionId).doc(randomId).set(dummyUser()) // no auth
+      )
+    })
+
+    it('can not create user document with another uid', async () => {
+      await firebase.assertFails(
+        authedApp({ uid: 'mogu' }).collection(userCollectionId).doc('jiro').set(dummyUser()) // no auth
       )
     })
 
     it('can create user document wit auth', async () => {
       await firebase.assertSucceeds(
-        makeUserReference(authedApp({ uid: 'mogu' }), 'mogu').set(dummyUser())
+        authedApp({ uid: 'mogu' }).collection(userCollectionId).doc('mogu').set(dummyUser()) // no auth
+      )
+    })
+  })
 
   describe('update', () => {
     it('can not update user document without auth', async () => {
