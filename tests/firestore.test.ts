@@ -134,6 +134,25 @@ describe('/users', () => {
       )
     })
   })
+
+  describe('delete', () => {
+    it('can not delete user document ', async () => {
+      const userId = 'taro'
+      await adminApp.collection(userCollectionId).doc(userId).set(dummyRock())
+
+      const userReference = authedApp({ uid: userId }).collection(userCollectionId).doc(userId)
+      await firebase.assertFails(
+        userReference.delete()
+      )
+    })
+
+    it('can not delete another user document ', async () => {
+      const userId = 'taro'
+      await adminApp.collection(userCollectionId).doc(userId).set(dummyRock())
+
+      const userReference = authedApp({ uid: 'jiro' }).collection(userCollectionId).doc(userId)
+      await firebase.assertFails(
+        userReference.delete()
       )
     })
   })
