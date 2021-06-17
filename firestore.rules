@@ -44,10 +44,10 @@ service cloud.firestore {
       }
 
       match/climbed/{climbedId} {
-        allow read:   if true;
-        allow create: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
-        allow update: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
-        allow delete: if isUserAuthenticated(userId) && request.resource.data.userId == userId;
+        allow read:   if true
+        allow create: if isUserAuthenticated(userId)
+        allow update: if isUserAuthenticated(userId)
+        allow delete: if isUserAuthenticated(userId)
       }
     }
   }
