@@ -83,7 +83,7 @@ describe('/users', () => {
   describe('read', () => {
     it('can read user document without auth', async () => {
       const uid = randomId
-      await adminApp.collection(userCollectionId).doc(uid).set(dummyUser())
+      await adminApp.collection(userCollectionId).doc(uid).set(dummyUser(uid))
 
       await firebase.assertSucceeds(
         authedApp().collection(userCollectionId).doc(uid).get()
@@ -93,27 +93,29 @@ describe('/users', () => {
 
   describe('create', () => {
     it('can not create user document without auth', async () => {
+      const uid = randomId
       await firebase.assertFails(
-        authedApp().collection(userCollectionId).doc(randomId).set(dummyUser()) // no auth
+        authedApp().collection(userCollectionId).doc(uid).set(dummyUser(uid)) // no auth
       )
     })
 
     it('can not create user document with another uid', async () => {
       await firebase.assertFails(
-        authedApp({ uid: 'mogu' }).collection(userCollectionId).doc('jiro').set(dummyUser()) // no auth
+        authedApp({ uid: 'mogu' }).collection(userCollectionId).doc('jiro').set(dummyUser('mogu')) // no auth
       )
     })
 
     it('can create user document wit auth', async () => {
+      const uid = randomId
       await firebase.assertSucceeds(
-        authedApp({ uid: 'mogu' }).collection(userCollectionId).doc('mogu').set(dummyUser()) // no auth
+        authedApp({ uid: uid }).collection(userCollectionId).doc(uid).set(dummyUser(uid)) // no auth
       )
     })
   })
 
   describe('update', () => {
     it('can not update user document without auth', async () => {
-      await adminApp.collection(userCollectionId).doc('taro').set(dummyRock())
+      await adminApp.collection(userCollectionId).doc('taro').set(dummyUser('taro'))
 
       const unAuthedApp = authedApp()
       const userReference = unAuthedApp.collection(userCollectionId).doc('taro')
@@ -124,7 +126,7 @@ describe('/users', () => {
     })
 
     it('can not update another user document ', async () => {
-      await adminApp.collection(userCollectionId).doc('taro').set(dummyRock())
+      await adminApp.collection(userCollectionId).doc('taro').set(dummyUser('taro'))
 
       const unAuthedApp = authedApp({ uid: 'jiro'})
       const userReference = unAuthedApp.collection(userCollectionId).doc('jiro')
@@ -137,7 +139,7 @@ describe('/users', () => {
     it('can update user document wit auth', async () => {
       const userId = randomId
       const userReference = authedApp({ uid: userId }).collection(userCollectionId).doc(userId)
-      await userReference.set(dummyUser())
+      await userReference.set(dummyUser(userId))
       await firebase.assertSucceeds(
         userReference.update({ 'name': 'aaaaaaaaaa' })
       )
@@ -147,7 +149,7 @@ describe('/users', () => {
   describe('delete', () => {
     it('can not delete user document ', async () => {
       const userId = 'taro'
-      await adminApp.collection(userCollectionId).doc(userId).set(dummyRock())
+      await adminApp.collection(userCollectionId).doc(userId).set(dummyUser(userId))
 
       const userReference = authedApp({ uid: userId }).collection(userCollectionId).doc(userId)
       await firebase.assertFails(
@@ -157,7 +159,7 @@ describe('/users', () => {
 
     it('can not delete another user document ', async () => {
       const userId = 'taro'
-      await adminApp.collection(userCollectionId).doc(userId).set(dummyRock())
+      await adminApp.collection(userCollectionId).doc(userId).set(dummyUser(userId))
 
       const userReference = authedApp({ uid: 'jiro' }).collection(userCollectionId).doc(userId)
       await firebase.assertFails(
@@ -172,18 +174,51 @@ describe('/users/{userId}/rocks', () => {
     it('can read rock document without auth', async () => {
       const parentId = randomId
       const documentId = randomId
-      await adminApp.collection(userCollectionId).doc(parentId).collection(rockCollectionId).doc(documentId)
+      await adminApp
+      .collection(userCollectionId).doc(parentId)
+      .collection(rockCollectionId).doc(documentId)
+      .set(dummyRock(documentId))
 
       await firebase.assertSucceeds( 
-        authedApp().collection(userCollectionId).doc(parentId).collection(rockCollectionId).doc(documentId).get()
+        authedApp()
+        .collection(userCollectionId).doc(parentId)
+        .collection(rockCollectionId).doc(documentId)
+        .get()
       )
     })
   })
+
+
+  describe('create', () => {
+    it('can not create rock document without auth', async () => {
+      const uid = randomId
+      await firebase.assertFails(
+        authedApp()
+        .collection(userCollectionId).doc(uid)
+        .collection(rockCollectionId).doc(uid)
+        .set(dummyRock(uid)) // no auth
+      )
+    })
+
+    it('can not create rock document with another uid', async () => {
+      await firebase.assertFails(
+        authedApp({ uid: 'mogu' }).collection(userCollectionId).doc('jiro').set(dummyUser('mogu')) // no auth
+      )
+    })
+
+    it('can create user document wit auth', async () => {
+      const uid = randomId
+      await firebase.assertSucceeds(
+        authedApp({ uid: uid }).collection(userCollectionId).doc(uid).set(dummyUser(uid)) // no auth
+      )
+    })
+  })
+
 })
 
-function dummyUser(): User {
+function dummyUser(id: string): User {
   return {
-    id:           randomId,
+    id:           id,
     createdAt:    today,
     updatedAt:    today,
     parentPath:   '',
@@ -206,9 +241,9 @@ function dummyUser(): User {
   }
 }
 
-function dummyRock(): Rock {
+function dummyRock(id: string): Rock {
   return {
-    id:             randomId,
+    id:             id,
     createdAt:      today,
     updatedAt:      today,
     parentPath:     '',
