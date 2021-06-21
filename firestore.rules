@@ -23,29 +23,115 @@ service cloud.firestore {
     	allow read: if true;
     }
 
+    // TODO: Please investigate the way of schema checking of oprional fields.
+    function isValidUser(userData) {
+      return 'id'       in userData && userData.id is string
+      && 'createdAt'    in userData && userData.createdAt is timestamp
+      && 'updatedAt'    in userData
+      && 'parentPath'   in userData && userData.parentPath is string
+      && 'name'         in userData && userData.name is string
+      && 'photoURL'     in userData
+      && 'socialLinks'  in userData && userData.socialLinks is list
+      && 'introduction' in userData
+      && 'headerUrl'    in userData
+      && 'deleted'      in userData && userData.deleted is bool
+    }
+
+    function isValidRock(rock) {
+      return 'id'           in rock && rock.id is string
+      && 'createdAt'        in rock && rock.createdAt is timestamp
+      && 'updatedAt'        in rock
+      && 'parentPath'       in rock && rock.parentPath is string
+      && 'registeredUserId' in rock && rock.registeredUserId is string
+      && 'name'             in rock && rock.name is string
+      && 'address'          in rock && rock.address is string
+      && 'prefecture'       in rock && rock.prefecture is string
+      && 'location'         in rock && rock.location is latlng
+      && 'seasons'          in rock && rock.seasons is list
+      && 'lithology'        in rock && rock.lithology is string
+      && 'desc'             in rock && rock.desc is string
+      && 'headerUrl'        in rock
+      && 'imageUrls'        in rock && rock.imageUrls is list
+    }
+
+    function isValidCourse(course) {
+      return 'id'           in course && course.id is string
+      && 'createdAt'        in course && course.createdAt is timestamp
+      && 'updatedAt'        in course
+      && 'parentPath'       in course && course.parentPath is string
+      && 'registeredUserId' in course && course.registeredUserId is string
+      && 'name'             in course && course.name is string
+      && 'desc'             in course && course.desc is string
+      && 'grade'            in course && course.grade is string
+      && 'shape'            in course && course.shape is list
+      && 'parentRockName'   in course && course.parentRockName is string
+      && 'parentRockId'     in course && course.parentRockId is string
+      && 'headerUrl'        in course
+      && 'imageUrls'        in course && course.imageUrls is list
+    }
+
+    function isValidClimbed(climbed) {
+      return 'id'                in climbed && climbed.id is string
+      && 'createdAt'             in climbed && climbed.createdAt is timestamp
+      && 'updatedAt'             in climbed
+      && 'parentPath'            in climbed && climbed.parentPath is string
+      && 'registeredUserId'      in climbed && climbed.registeredUserId is string
+      && 'climbedDate'           in climbed && climbed.climbedDate is timestamp
+      && 'parentCourseId'        in climbed && climbed.parentCourseId is string
+      && 'parentCourseReference' in climbed && climbed.parentCourseReference is string
+      && 'totalNumberReference'  in climbed && climbed.totalNumberReference is path
+      && 'type'                  in climbed && climbed.type is string
+    }
+
+    function isValidTotalClimbedNumber(totalClimbedNumber) {
+      return 'id'                in totalClimbedNumber && totalClimbedNumber.id is string
+      && 'createdAt'             in totalClimbedNumber && totalClimbedNumber.createdAt is timestamp
+      && 'updatedAt'             in totalClimbedNumber
+      && 'parentPath'            in totalClimbedNumber && totalClimbedNumber.parentPath is string
+      && 'parentCourseReference' in totalClimbedNumber && totalClimbedNumber.parentCourseReference is path
+      && 'flashTotal'            in totalClimbedNumber && totalClimbedNumber.flashTotal is number
+      && 'redPointTotal'         in totalClimbedNumber && totalClimbedNumber.redPointTotal is number
+    }
+
     match/users/{userId} {
       allow read:   if true;
       allow create: if isUserAuthenticated(userId)
+        && isValidUser(request.resource.data)
+        && request.resource.data.id == userId 
       allow update: if isUserAuthenticated(userId)
+        && isValidUser(request.resource.data)
+        && request.resource.data.id == userId 
       allow delete: if false;
 
       match/rocks/{rockId} {
         allow read:   if true;
         allow create: if isUserAuthenticated(userId)
+          && isValidRock(request.resource.data)
+          && request.resource.data.registeredUserId == userId 
         allow update: if isUserAuthenticated(userId)
+          && isValidRock(request.resource.data)
+          && request.resource.data.registeredUserId == userId 
         allow delete: if isUserAuthenticated(userId)
+          && request.resource.data.registeredUserId == userId 
       }
 
       match/courses/{courseId} {
         allow read:   if true;
         allow create: if isUserAuthenticated(userId)
+          && isValidCourse(request.resource.data)
+          && request.resource.data.registeredUserId == userId 
         allow update: if isUserAuthenticated(userId)
+          && isValidCourse(request.resource.data)
+          && request.resource.data.registeredUserId == userId 
         allow delete: if isUserAuthenticated(userId)
+          && request.resource.data.registeredUserId == userId 
 
         match/totalClimbedNumber/{id} {
           allow read:   if true;
           allow create: if isUserAuthenticated(userId)
+          && isValidTotalClimbedNumber(id)
           allow update: if isUserAuthenticated(userId)
+          && isValidTotalClimbedNumber(id)
           allow delete: if false
         }
       }
@@ -53,8 +139,13 @@ service cloud.firestore {
       match/climbed/{climbedId} {
         allow read:   if true
         allow create: if isUserAuthenticated(userId)
+          && isValidClimbed(request.resource.data)
+          && request.resource.data.registeredUserId == userId 
         allow update: if isUserAuthenticated(userId)
+          && isValidClimbed(request.resource.data)
+          && request.resource.data.registeredUserId == userId 
         allow delete: if isUserAuthenticated(userId)
+          && request.resource.data.registeredUserId == userId 
       }
     }
   }
