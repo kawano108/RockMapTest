@@ -19,7 +19,7 @@ service cloud.firestore {
     	allow read: if true;
     }
     
-    match/{path=**}/climbed/{climbed} {
+    match/{path=**}/climbRecord/{climbRecord} {
     	allow read: if true;
     }
 
@@ -70,19 +70,6 @@ service cloud.firestore {
       && 'imageUrls'        in course && course.imageUrls is list
     }
 
-    function isValidClimbed(climbed) {
-      return 'id'                in climbed && climbed.id is string
-      && 'createdAt'             in climbed && climbed.createdAt is timestamp
-      && 'updatedAt'             in climbed
-      && 'parentPath'            in climbed && climbed.parentPath is string
-      && 'registeredUserId'      in climbed && climbed.registeredUserId is string
-      && 'climbedDate'           in climbed && climbed.climbedDate is timestamp
-      && 'parentCourseId'        in climbed && climbed.parentCourseId is string
-      && 'parentCourseReference' in climbed && climbed.parentCourseReference is string
-      && 'totalNumberReference'  in climbed && climbed.totalNumberReference is path
-      && 'type'                  in climbed && climbed.type is string
-    }
-
     function isValidTotalClimbedNumber(totalClimbedNumber) {
       return 'id'                in totalClimbedNumber && totalClimbedNumber.id is string
       && 'createdAt'             in totalClimbedNumber && totalClimbedNumber.createdAt is timestamp
@@ -91,6 +78,17 @@ service cloud.firestore {
       && 'parentCourseReference' in totalClimbedNumber && totalClimbedNumber.parentCourseReference is path
       && 'flashTotal'            in totalClimbedNumber && totalClimbedNumber.flashTotal is number
       && 'redPointTotal'         in totalClimbedNumber && totalClimbedNumber.redPointTotal is number
+    function isValidClimbRecord(climbRecord) {
+      return 'id'                in climbRecord && climbRecord.id is string
+      && 'createdAt'             in climbRecord && climbRecord.createdAt is timestamp
+      && 'updatedAt'             in climbRecord
+      && 'parentPath'            in climbRecord && climbRecord.parentPath is string
+      && 'registeredUserId'      in climbRecord && climbRecord.registeredUserId is string
+      && 'climbedDate'           in climbRecord && climbRecord.climbedDate is timestamp
+      && 'parentCourseId'        in climbRecord && climbRecord.parentCourseId is string
+      && 'parentCourseReference' in climbRecord && climbRecord.parentCourseReference is path
+      && 'totalNumberReference'  in climbRecord && climbRecord.totalNumberReference is path
+      && 'type'                  in climbRecord && climbRecord.type is string
     }
 
     match/users/{userId} {
@@ -136,16 +134,15 @@ service cloud.firestore {
         }
       }
 
-      match/climbed/{climbedId} {
+      match/climbRecord/{climbRecordId} {
         allow read:   if true
         allow create: if isUserAuthenticated(userId)
-          && isValidClimbed(request.resource.data)
+          && isValidClimbRecord(request.resource.data)
           && request.resource.data.registeredUserId == userId 
         allow update: if isUserAuthenticated(userId)
-          && isValidClimbed(request.resource.data)
+          && isValidClimbRecord(request.resource.data)
           && request.resource.data.registeredUserId == userId 
         allow delete: if isUserAuthenticated(userId)
-          && request.resource.data.registeredUserId == userId 
       }
     }
   }
