@@ -70,14 +70,6 @@ service cloud.firestore {
       && 'imageUrls'        in course && course.imageUrls is list
     }
 
-    function isValidTotalClimbedNumber(totalClimbedNumber) {
-      return 'id'                in totalClimbedNumber && totalClimbedNumber.id is string
-      && 'createdAt'             in totalClimbedNumber && totalClimbedNumber.createdAt is timestamp
-      && 'updatedAt'             in totalClimbedNumber
-      && 'parentPath'            in totalClimbedNumber && totalClimbedNumber.parentPath is string
-      && 'parentCourseReference' in totalClimbedNumber && totalClimbedNumber.parentCourseReference is path
-      && 'flashTotal'            in totalClimbedNumber && totalClimbedNumber.flashTotal is number
-      && 'redPointTotal'         in totalClimbedNumber && totalClimbedNumber.redPointTotal is number
     function isValidClimbRecord(climbRecord) {
       return 'id'                in climbRecord && climbRecord.id is string
       && 'createdAt'             in climbRecord && climbRecord.createdAt is timestamp
@@ -124,12 +116,10 @@ service cloud.firestore {
         allow delete: if isUserAuthenticated(userId)
           && request.resource.data.registeredUserId == userId 
 
-        match/totalClimbedNumber/{id} {
+        match/totalClimbedNumber/{totalClimbedNumberId} {
           allow read:   if true;
-          allow create: if isUserAuthenticated(userId)
-          && isValidTotalClimbedNumber(id)
-          allow update: if isUserAuthenticated(userId)
-          && isValidTotalClimbedNumber(id)
+          allow create: if false
+          allow update: if false
           allow delete: if false
         }
       }
