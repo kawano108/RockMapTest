@@ -2,7 +2,7 @@ import * as testing from "@firebase/testing";
 
 type IncrementableNumber = number | testing.firestore.FieldValue
 
-export type TotalClimbedNumber = {
+export interface TotalClimbedNumber {
   id: string
   createdAt: Date
   updatedAt: Date | null
