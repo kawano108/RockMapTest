@@ -7,7 +7,7 @@ import {climbType} from "../models/ClimbType";
 
 export default store
     .document("users/{userId}/climbRecord/{climbRecordId}")
-    .onCreate((snap, context) => {
+    .onCreate((snap) => {
       const newValue = snap.data();
       const db = snap.ref.firestore;
 

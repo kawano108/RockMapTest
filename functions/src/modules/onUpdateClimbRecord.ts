@@ -3,7 +3,7 @@ import {climbType} from "../models/ClimbType";
 
 export default store
     .document("users/{userId}/climbRecord/{climbRecordId}")
-    .onUpdate((snap, context) => {
+    .onUpdate((snap) => {
       const oldType = snap.before.data().type;
       const newValue = snap.after.data();
       const newType = newValue.type;

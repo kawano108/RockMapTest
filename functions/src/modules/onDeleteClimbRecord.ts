@@ -3,7 +3,7 @@ import {climbType} from "../models/ClimbType";
 
 export default store
     .document("users/{userId}/climbRecord/{climbRecordId}")
-    .onDelete((snap, context) => {
+    .onDelete((snap) => {
       const deletedValue = snap.data();
       const db = snap.ref.firestore;
 
