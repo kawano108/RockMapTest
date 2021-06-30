@@ -1,6 +1,6 @@
 
 import {ObjectMetadata} from "firebase-functions/lib/providers/storage";
-import {defaultFunctions, adminStore} from "../index";
+import {defaultFunctions, adminStore, FieldValue} from "../index";
 
 const collectionNames = [
   "rocks",
@@ -41,17 +41,16 @@ export default defaultFunctions
       }
 
       const destination = await makeDocumentPath(collection, components[1]);
-
-      const updateData: {
-        [key: string] : string
-      } = {
-        [imageType.fieldName]: makeDlURL(object),
-      };
-
-      console.log("updateData: " + updateData);
-      return adminStore
-          .doc(destination)
-          .update(updateData);
+      const dlURL = makeDlURL(object);
+      if (imageType.type === "normal") {
+        return adminStore
+            .doc(destination)
+            .update({[imageType.fieldName]: FieldValue.arrayUnion(dlURL)});
+      } else {
+        return adminStore
+            .doc(destination)
+            .update({[imageType.fieldName]: dlURL});
+      }
     });
 
 /**
