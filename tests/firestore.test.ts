@@ -1,50 +1,12 @@
 import * as firebase from "@firebase/testing";
 import * as fs from "fs";
 
+import {User, dummyUser} from "./models/users";
+import {Rock, dummyRock} from "./models/rocks";
+
 type Auth = {
   uid?: string,
   [key: string]: any
-}
-
-type SocialLink = {
-  linkType: string
-  link:     string
-}
-
-type User = {
-  id:           string
-  createdAt:    Date
-  updatedAt:    Date
-  parentPath:   string
-  name:         string
-  photoURL:     string
-  socialLinks:  SocialLink[]
-  introduction: string
-  headerUrl?:    string
-  deleted:      Boolean
-  isRoot:       Boolean   
-}
-
-type GeoPoint = {
-  latitude:  number
-  longitude: number 
-}
-
-type Rock = {
-  id:             string
-  createdAt:      Date
-  updatedAt?:     Date
-  parentPath:     string
-  name:           string
-  address:        string
-  prefecture:     string
-  location:       GeoPoint
-  seasons:        string[]
-  lithology:      string
-  desc:           string
-  registedUserId: string
-  headerUrl?:     string
-  imageUrls:      string[]
 }
 
 const projectId = "rockmap-70133"
@@ -215,51 +177,3 @@ describe('/users/{userId}/rocks', () => {
   })
 
 })
-
-function dummyUser(id: string): User {
-  return {
-    id:           id,
-    createdAt:    today,
-    updatedAt:    today,
-    parentPath:   '',
-    name:         'testUser',
-    photoURL:     'https://javascript.info/url',
-    socialLinks:  [
-      {
-        linkType: 'twitter',
-        link: 'aaaa'
-      },
-      {
-        linkType: 'facebook',
-        link: 'bbbb'
-      },
-    ],
-    introduction: 'これはプロフィールです。',
-    headerUrl:    'https://javascript.info/url',
-    deleted:      false,
-    isRoot:       true 
-  }
-}
-
-function dummyRock(id: string): Rock {
-  return {
-    id:             id,
-    createdAt:      today,
-    updatedAt:      today,
-    parentPath:     '',
-    name:           '日陰岩',
-    address:        '東京都千代田区丸の内一丁目',
-    prefecture:     '東京都',
-    location:       {
-      latitude:  35.681872,
-      longitude: 139.765847 
-    },
-    seasons:        ['summer'],
-    lithology:      'granite',
-    desc:           'aaaaaaaaaaaaaaaaaaaa',
-    registedUserId: 'other',
-    headerUrl:      'https://javascript.info/url',
-    imageUrls:      ['https://javascript.info/url']
-  }
-}
-
