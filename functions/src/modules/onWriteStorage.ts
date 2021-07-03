@@ -1,4 +1,3 @@
-
 import {ObjectMetadata} from "firebase-functions/lib/providers/storage";
 import {defaultFunctions, adminStore, FieldValue} from "../index";
 
