@@ -13,7 +13,8 @@ const funcs: { [name: string]: string } = {
   onCreateClimbRecord: "./modules/onCreateClimbRecord",
   onUpdateClimbRecord: "./modules/onUpdateClimbRecord",
   onDeleteClimbRecord: "./modules/onDeleteClimbRecord",
-  onWriteRockStorage: "./modules/onWriteStorage",
+  onWriteStorage: "./modules/onWriteStorage",
+  onDeleteStorage: "./modules/onDeleteStorage",
 };
 
 for (const name in funcs) {
