@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "rockmap-70133"
+    "default": "rockmap-70133",
+    "dev": "rockmap-70133",
+    "prod": "rockmap-release"
   }
 }

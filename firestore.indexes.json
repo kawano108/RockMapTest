@@ -1,7 +1,7 @@
 {
   "indexes": [
     {
-      "collectionGroup": "climbed",
+      "collectionGroup": "climbRecord",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
         {
@@ -17,7 +17,7 @@
   ],
   "fieldOverrides": [
     {
-      "collectionGroup": "climbed",
+      "collectionGroup": "climbRecord",
       "fieldPath": "parentCourseId",
       "indexes": [
         {
@@ -39,8 +39,30 @@
       ]
     },
     {
-      "collectionGroup": "climbed",
+      "collectionGroup": "climbRecord",
       "fieldPath": "registeredUserId",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "courses",
+      "fieldPath": "id",
       "indexes": [
         {
           "order": "ASCENDING",
@@ -84,7 +106,7 @@
     },
     {
       "collectionGroup": "courses",
-      "fieldPath": "registedUserId",
+      "fieldPath": "registeredUserId",
       "indexes": [
         {
           "order": "ASCENDING",
@@ -150,7 +172,7 @@
     },
     {
       "collectionGroup": "rocks",
-      "fieldPath": "registedUserId",
+      "fieldPath": "registeredUserId",
       "indexes": [
         {
           "order": "ASCENDING",
