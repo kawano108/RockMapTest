@@ -102,7 +102,6 @@ service cloud.firestore {
           && isValidRock(request.resource.data)
           && request.resource.data.registeredUserId == userId 
         allow delete: if isUserAuthenticated(userId)
-          && request.resource.data.registeredUserId == userId 
       }
 
       match/courses/{courseId} {
@@ -114,7 +113,6 @@ service cloud.firestore {
           && isValidCourse(request.resource.data)
           && request.resource.data.registeredUserId == userId 
         allow delete: if isUserAuthenticated(userId)
-          && request.resource.data.registeredUserId == userId 
 
         match/totalClimbedNumber/{totalClimbedNumberId} {
           allow read:   if true;
