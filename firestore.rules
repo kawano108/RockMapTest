@@ -85,7 +85,7 @@ service cloud.firestore {
       allow read:   if true;
       allow create: if isUserAuthenticated(request.resource.data.registeredUserId)
         && isValidRock(request.resource.data)
-      allow update: if isUserAuthenticated(request.resource.data.registeredUserIdId)
+      allow update: if isUserAuthenticated(request.resource.data.registeredUserId)
         && isValidRock(request.resource.data)
       allow delete: if isAuthenticated()
     }
