@@ -9,19 +9,6 @@ service cloud.firestore {
     function isUserAuthenticated(userId) {
         return isAuthenticated() && userId == request.auth.uid;
     }
-    
-    // for read subCollections
-    match/{path=**}/rocks/{rock} {
-    	allow read: if true;
-    }
-    
-    match/{path=**}/courses/{course} {
-    	allow read: if true;
-    }
-    
-    match/{path=**}/climbRecord/{climbRecord} {
-    	allow read: if true;
-    }
 
     // TODO: Please investigate the way of schema checking of oprional fields.
     function isValidUser(userData) {
@@ -92,46 +79,40 @@ service cloud.firestore {
         && isValidUser(request.resource.data)
         && request.resource.data.id == userId 
       allow delete: if false;
+    }
 
-      match/rocks/{rockId} {
+    match/rocks/{rockId} {
+      allow read:   if true;
+      allow create: if isUserAuthenticated(request.resource.data.registeredUserId)
+        && isValidRock(request.resource.data)
+      allow update: if isUserAuthenticated(request.resource.data.registeredUserIdId)
+        && isValidRock(request.resource.data)
+      allow delete: if isAuthenticated()
+    }
+
+    match/courses/{courseId} {
+      allow read:   if true;
+      allow create: if isUserAuthenticated(request.resource.data.registeredUserId)
+        && isValidCourse(request.resource.data)
+      allow update: if isUserAuthenticated(request.resource.data.registeredUserId)
+        && isValidCourse(request.resource.data)
+      allow delete: if isAuthenticated()
+
+      match/totalClimbedNumber/{totalClimbedNumberId} {
         allow read:   if true;
-        allow create: if isUserAuthenticated(userId)
-          && isValidRock(request.resource.data)
-          && request.resource.data.registeredUserId == userId 
-        allow update: if isUserAuthenticated(userId)
-          && isValidRock(request.resource.data)
-          && request.resource.data.registeredUserId == userId 
-        allow delete: if isUserAuthenticated(userId)
+        allow create: if false
+        allow update: if false
+        allow delete: if false
       }
+    }
 
-      match/courses/{courseId} {
-        allow read:   if true;
-        allow create: if isUserAuthenticated(userId)
-          && isValidCourse(request.resource.data)
-          && request.resource.data.registeredUserId == userId 
-        allow update: if isUserAuthenticated(userId)
-          && isValidCourse(request.resource.data)
-          && request.resource.data.registeredUserId == userId 
-        allow delete: if isUserAuthenticated(userId)
-
-        match/totalClimbedNumber/{totalClimbedNumberId} {
-          allow read:   if true;
-          allow create: if false
-          allow update: if false
-          allow delete: if false
-        }
-      }
-
-      match/climbRecord/{climbRecordId} {
-        allow read:   if true
-        allow create: if isUserAuthenticated(userId)
-          && isValidClimbRecord(request.resource.data)
-          && request.resource.data.registeredUserId == userId 
-        allow update: if isUserAuthenticated(userId)
-          && isValidClimbRecord(request.resource.data)
-          && request.resource.data.registeredUserId == userId 
-        allow delete: if isUserAuthenticated(userId)
-      }
+    match/climbRecord/{climbRecordId} {
+      allow read:   if true
+      allow create: if isUserAuthenticated(request.resource.data.registeredUserId)
+        && isValidClimbRecord(request.resource.data)
+      allow update: if isUserAuthenticated(request.resource.data.registeredUserId)
+        && isValidClimbRecord(request.resource.data)
+      allow delete: if isAuthenticated()
     }
   }
 }
