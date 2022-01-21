@@ -1,5 +1,4 @@
 import {ObjectMetadata} from "firebase-functions/lib/providers/storage";
-import {adminStore} from "../index";
 
 /**
  * make document path
@@ -11,18 +10,7 @@ export async function makeDocumentPath(
     collection: string,
     documentId: string
 ): Promise<string> {
-  if (collection === "users") {
-    return `${collection}/${documentId}`;
-  }
-
-  const document = await adminStore
-      .collectionGroup(collection)
-      .where("id", "==", documentId)
-      .get();
-
-  const documentPath = document.docs[0].ref.path;
-  console.log(documentPath);
-  return documentPath;
+  return `${collection}/${documentId}`;
 }
 
 /**

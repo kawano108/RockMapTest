@@ -2,7 +2,7 @@ import {store, FieldValue} from "../index";
 import {climbType} from "../models/ClimbType";
 
 export default store
-    .document("users/{userId}/climbRecord/{climbRecordId}")
+    .document("climbRecord/{climbRecordId}")
     .onDelete((snap) => {
       const deletedValue = snap.data();
       const db = snap.ref.firestore;

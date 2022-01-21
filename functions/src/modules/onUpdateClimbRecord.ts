@@ -2,7 +2,7 @@ import {store, FieldValue} from "../index";
 import {climbType} from "../models/ClimbType";
 
 export default store
-    .document("users/{userId}/climbRecord/{climbRecordId}")
+    .document("climbRecord/{climbRecordId}")
     .onUpdate((snap) => {
       const oldType = snap.before.data().type;
       const newValue = snap.after.data();

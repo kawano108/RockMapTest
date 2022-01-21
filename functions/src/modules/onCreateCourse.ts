@@ -22,7 +22,7 @@ function makeTotalClimbedNumber(
 }
 
 export default store
-    .document("users/{userId}/courses/{courseId}")
+    .document("courses/{courseId}")
     .onCreate((snap) => {
       const totalClimbedNumberCollectionId = "totalClimbedNumber";
 
